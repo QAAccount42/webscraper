@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Web Scraper</title>
+    <link rel="stylesheet" href="/static/dist/app.css">
+    <base href="/">
+</head>
+<body>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">Web scraper</a>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="/list">List</a>
+                </li>
+                <li>
+                    <a href="/new">+ new</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="content">
+
+    <div class="row" ng-show="$root.hasErrors" ng-cloak>
+        <div class="col col-md-8 col-md-offset-2">
+            <div class="alert alert-dismissible alert-danger">
+                <button type="button" class="close" data-dismiss="alert" ng-click="$root.hasErrors = false">×</button>
+                Something went wrong. Try again later.
+            </div>
+        </div>
+    </div>
+
+    <div class="height-100-percents" ng-view></div>
+</div>
+<div class="hidden" id="ajax-loader">
+    <div class="overlay"></div>
+    <i></i>
+</div>
+<script src="/static/dist/app.js"></script>
+</body>
+</html>
