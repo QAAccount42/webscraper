@@ -1,0 +1,27 @@
+{
+  "name": "web-scraper",
+  "version": "0.0.1",
+  "authors": [
+    "s0ph1e <sonya1912@gmail.com>"
+  ],
+  "main": "app.js",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.5.9",
+    "angular-route": "~1.5.9",
+    "angular-cookies": "~1.5.9",
+    "bootstrap": "~3.3.4",
+    "angular-resource": "~1.5.9"
+  }
+}
