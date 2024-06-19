@@ -62,7 +62,8 @@ var service = {
 			urlFilter: (url) => url.startsWith(options.url), // Filter links to other websites
 			recursive: true,
 			maxRecursiveDepth: 10,
-			request: options.request
+			request: options.request,
+			requestConcurrency: 5
 		});
 
 		return scrapeWebsite(scraperOptions).then(function() {
