@@ -63,6 +63,7 @@ var service = {
 			recursive: true,
 			maxRecursiveDepth: 10,
 			request: options.request,
+			ignoreErrors: true,
 			requestConcurrency: 5
 		});
 
