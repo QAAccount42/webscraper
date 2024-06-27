@@ -36,6 +36,7 @@ function getSitesDirectories() {
 
 function buildSiteObject(directory) {
 	return {
+		status: true,
 		directory: directory,
 		previewPath: format(config.previewPath, {directory: directory}),
 		downloadPath: format(config.downloadPath, {directory: directory})
@@ -50,8 +51,26 @@ function getNotFoundError(directory) {
 	};
 }
 
+function scrapeBlocked(res, result) {
+
+
+	if(result && result.length && result[0].type){
+		return res.status(500).json({
+			status: false,
+			message: "Something went wrong. But you can still find the partially downloaded project files under list menu."
+		  })
+	} else {
+		return res.status(500).json({
+			status: false,
+			message: "Something went wrong. Try again later."
+		  })
+	}
+
+	
+}
+
 var service = {
-	scrape: function scrape(options) {
+	scrape: function scrape(options, req, res) {
 		var siteDirname = getSiteDirname(options.url);
 		var siteFullPath = getSiteFullPath(siteDirname);
 
@@ -67,8 +86,14 @@ var service = {
 			requestConcurrency: 5
 		});
 
-		return scrapeWebsite(scraperOptions).then(function() {
-			return Promise.resolve(buildSiteObject(siteDirname));
+
+		return scrapeWebsite(scraperOptions).then(function(result) {
+			if(result && result.length && result[0].type){
+				return Promise.resolve(buildSiteObject(siteDirname));
+			} else {
+				return Promise.reject(scrapeBlocked(res, result));
+			}
+
 		});
 	},
 

@@ -2,7 +2,9 @@ var Archiver = require('archiver');
 var sites = require('../../core/sites');
 
 module.exports = {
-	scrape: sites.scrape,
+	scrape: function(options, req, res){
+		return sites.scrape(options, req, res);
+	},
 	list: sites.list,
 	find: function(params) {
 		return sites.find(params.dirname);

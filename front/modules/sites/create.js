@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('app').controller('CreateCtrl', function ($scope, $http, $location, sites, userAgents) {
+angular.module('app').controller('CreateCtrl', function ($rootScope, $scope, $http, $location, sites, userAgents) {
 	$scope.userAgents = userAgents.list();
 	$scope.showAdvancedOptions = false;
 
@@ -11,6 +11,13 @@ angular.module('app').controller('CreateCtrl', function ($scope, $http, $locatio
 	$scope.add = function () {
 		sites.save($scope.data).$promise.then(function siteScraped (site) {
 			$location.path('/view/' + site.directory);
+		},function(error) {
+			console.log("my error", error);
+			$rootScope.errorMessage = null;
+			if(error.data && error.data.message){
+				$rootScope.errorMessage = error.data.message;
+			}
+			
 		});
 	};
 
