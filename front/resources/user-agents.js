@@ -3,6 +3,9 @@ angular.module('app.resources').factory('userAgents', function () {
 			list: function() {
 				return [
 					{
+						title: 'Chrome 126.0 Win10 64-bit',
+						userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+					}, {
 						title: 'Chrome 40.0 Win7 64-bit',
 						userAgent: 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36'
 					}, {

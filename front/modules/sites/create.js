@@ -10,7 +10,15 @@ angular.module('app').controller('CreateCtrl', function ($rootScope, $scope, $ht
 
 	$scope.add = function () {
 		sites.save($scope.data).$promise.then(function siteScraped (site) {
-			$location.path('/view/' + site.directory);
+			$rootScope.successMessage = null;
+			if(site && site.message){
+				$rootScope.errorMessage = null;
+				$rootScope.isSuccess = true;
+				$rootScope.successMessage = site.message;
+			} else {
+				$location.path('/view/' + site.directory);
+			}
+			
 		},function(error) {
 			console.log("my error", error);
 			$rootScope.errorMessage = null;

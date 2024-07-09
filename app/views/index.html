@@ -43,6 +43,16 @@
         </div>
     </div>
 
+    <div class="row" ng-show="$root.isSuccess" ng-cloak>
+        <div class="col col-md-8 col-md-offset-2">
+            <div class="alert alert-dismissible alert-success">
+                <button type="button" class="close" data-dismiss="alert" ng-click="$root.isSuccess = false; $root.successMessage = '';">×</button>
+                <!-- Something went wrong. Try again later. -->
+                {{ $root.successMessage ? $root.successMessage : "This task is running in background. Please check the list page after few minutes." }}
+            </div>
+        </div>
+    </div>
+
     <div class="height-100-percents" ng-view></div>
 </div>
 <div class="hidden" id="ajax-loader">

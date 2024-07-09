@@ -83,18 +83,27 @@ var service = {
 			maxRecursiveDepth: 10,
 			request: options.request,
 			ignoreErrors: true,
-			requestConcurrency: 5
+			// requestConcurrency: 5
 		});
 
 
-		return scrapeWebsite(scraperOptions).then(function(result) {
+		scrapeWebsite(scraperOptions).then(function(result) {
 			if(result && result.length && result[0].type){
-				return Promise.resolve(buildSiteObject(siteDirname));
+				console.log("scrape is done 1");
+				// return Promise.resolve(buildSiteObject(siteDirname));
 			} else {
-				return Promise.reject(scrapeBlocked(res, result));
+				console.log("scrape is fail 2");
+				// return Promise.reject(scrapeBlocked(res, result));
 			}
 
 		});
+
+		return res.status(200).json({
+			status: true,
+			message: "This task is running in background. Please check the list page after few minutes."
+		})
+
+
 	},
 
 	list: function list() {

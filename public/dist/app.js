@@ -419,7 +419,15 @@ angular.module('app').controller('CreateCtrl', function ($rootScope, $scope, $ht
 
 	$scope.add = function () {
 		sites.save($scope.data).$promise.then(function siteScraped (site) {
-			$location.path('/view/' + site.directory);
+			$rootScope.successMessage = null;
+			if(site && site.message){
+				$rootScope.errorMessage = null;
+				$rootScope.isSuccess = true;
+				$rootScope.successMessage = site.message;
+			} else {
+				$location.path('/view/' + site.directory);
+			}
+			
 		},function(error) {
 			console.log("my error", error);
 			$rootScope.errorMessage = null;
@@ -467,11 +475,14 @@ angular.module('app').factory('errorInterceptor', ['$rootScope', '$q',
 		return {
 			request: function request (config) {
 				$rootScope.hasErrors = false;
+				$rootScope.isSuccess = false;
 				$rootScope.errorMessage = null;
+				$rootScope.successMessage = null;
 				return config;
 			},
 			responseError: function responseError (rejection) {
 				$rootScope.hasErrors = true;
+				$rootScope.isSuccess = false;
 				return $q.reject(rejection);
 			}
 		};
@@ -541,6 +552,9 @@ angular.module('app.resources').factory('userAgents', function () {
 			list: function() {
 				return [
 					{
+						title: 'Chrome 126.0 Win10 64-bit',
+						userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+					}, {
 						title: 'Chrome 40.0 Win7 64-bit',
 						userAgent: 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36'
 					}, {
