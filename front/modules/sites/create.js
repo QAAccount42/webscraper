@@ -1,14 +1,21 @@
 'use strict';
 
-angular.module('app').controller('CreateCtrl', function ($rootScope, $scope, $http, $location, sites, userAgents) {
+angular.module('app').controller('CreateCtrl', function ($rootScope, $scope, $http, $location, $timeout, sites, userAgents) {
 	$scope.userAgents = userAgents.list();
 	$scope.showAdvancedOptions = false;
+	$scope.isAdding = false;
 
 	$scope.toggleAdvancedOptions = function() {
 		$scope.showAdvancedOptions = !$scope.showAdvancedOptions;
 	};
 
 	$scope.add = function () {
+		if ($scope.isAdding) {
+            return; 
+        }
+
+		$scope.isAdding = true;
+
 		sites.save($scope.data).$promise.then(function siteScraped (site) {
 			$rootScope.successMessage = null;
 			if(site && site.message){
@@ -26,7 +33,12 @@ angular.module('app').controller('CreateCtrl', function ($rootScope, $scope, $ht
 				$rootScope.errorMessage = error.data.message;
 			}
 			
-		});
+		}).finally(function() {
+
+            $timeout(function() {
+                $scope.isAdding = false;
+            }, 2000);
+        });
 	};
 
 	$scope.reset = function () {

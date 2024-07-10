@@ -36,8 +36,7 @@
     <div class="row" ng-show="$root.hasErrors" ng-cloak>
         <div class="col col-md-8 col-md-offset-2">
             <div class="alert alert-dismissible alert-danger">
-                <button type="button" class="close" data-dismiss="alert" ng-click="$root.hasErrors = false; $root.errorMessage = '';">×</button>
-                <!-- Something went wrong. Try again later. -->
+                <button type="button" class="close" ng-click="$root.hasErrors = false; $root.errorMessage = '';">×</button>
                 {{ $root.errorMessage ? $root.errorMessage : "Something went wrong. Try again later." }}
             </div>
         </div>
@@ -46,8 +45,7 @@
     <div class="row" ng-show="$root.isSuccess" ng-cloak>
         <div class="col col-md-8 col-md-offset-2">
             <div class="alert alert-dismissible alert-success">
-                <button type="button" class="close" data-dismiss="alert" ng-click="$root.isSuccess = false; $root.successMessage = '';">×</button>
-                <!-- Something went wrong. Try again later. -->
+                <button type="button" class="close" ng-click="$root.isSuccess = false; $root.successMessage = '';">×</button>
                 {{ $root.successMessage ? $root.successMessage : "This task is running in background. Please check the list page after few minutes." }}
             </div>
         </div>

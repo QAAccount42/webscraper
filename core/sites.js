@@ -31,6 +31,18 @@ function getSitesDirectories() {
 		}).then(function() {
 			return Promise.resolve(directories);
 		});
+	}).catch(function(err) {
+		console.error('Error reading directory:', err);
+
+		const filesDir = path.join(config.publicPath, 'files');
+
+		return fs.mkdir(filesDir, { recursive: true },
+			(err) => {
+				if (err) {
+					return console.error(err);
+				}
+				console.log('Directory created successfully!');
+			})
 	});
 }
 
@@ -108,6 +120,9 @@ var service = {
 
 	list: function list() {
 		return getSitesDirectories().then(function (directories) {
+			if(!directories){
+				directories = []
+			}
 			var list = directories.map(buildSiteObject);
 			return Promise.resolve(list);
 		})

@@ -48,7 +48,7 @@
 
             <div class="form-group">
                 <div class="col-md-8">
-                    <button class="btn btn-success btn-block" ng-click='add()' ng-disabled="scraperForm.$invalid">Go</button>
+                    <button class="btn btn-success btn-block" ng-click='add()' ng-disabled="scraperForm.$invalid || isAdding">Go</button>
                 </div>
                 <div class="col-md-4">
                     <button class="btn btn-default btn-block" ng-click='reset()'>Reset</button>
