@@ -29,12 +29,17 @@ function getSiteDirname(siteUrl) {
     return domain + "-" + new Date().getTime();
 }
 
-function getSiteFullPath(siteDirname) {
-    return path.resolve(config.directory, siteDirname);
+function getSiteFullPath(siteDirname, files = false) {
+    if (files){
+        return path.resolve(config.directory, siteDirname);
+    } else {
+        return path.resolve(config.folderDirectory, siteDirname);
+    }
+    
 }
 
 function getSitesDirectories() {
-    var root = config.directory;
+    var root = config.folderDirectory;
     var directories = [];
     return fs
         .readdirAsync(root)
@@ -54,12 +59,21 @@ function getSitesDirectories() {
 
             const filesDir = path.join(config.publicPath, "files");
 
-            return fs.mkdir(filesDir, { recursive: true }, (err) => {
+            fs.mkdir(filesDir, { recursive: true }, (err) => {
                 if (err) {
                     return console.error(err);
                 }
-                console.log("Directory created successfully!");
+                console.log("files created successfully!");
             });
+
+            fs.mkdir(path.join(config.publicPath, "folders"), { recursive: true }, (err) => {
+                if (err) {
+                    return console.error(err);
+                }
+                console.log("folders created successfully!");
+            });
+
+            return;
         });
 }
 
@@ -149,6 +163,7 @@ async function uploadFile(authClient, siteFullPath, siteDirname) {
                             }
                             console.log("File deleted successfully");
                         });
+                        fs.rmSync(siteFullPath, {recursive: true, force: true})
                     }
                 })
                 .catch((err) => {
@@ -203,7 +218,7 @@ async function uploadFile(authClient, siteFullPath, siteDirname) {
 var service = {
     scrape: function scrape(options, req, res) {
         var siteDirname = getSiteDirname(options.url);
-        var siteFullPath = getSiteFullPath(siteDirname);
+        var siteFullPath = getSiteFullPath(siteDirname, true);
 
         var scraperOptions = _.extend({}, defaults, {
             urls: [options.url],
@@ -221,17 +236,30 @@ var service = {
             if (result && result.length && result[0].type) {
                 console.log("scrape is done 1");
                 // return Promise.resolve(buildSiteObject(siteDirname));
-                authorize()
-                    .then((authClient) => {
-                        // console.log(
-                        //     "jwtclient123",
-                        //     authClient,
-                        //     siteFullPath,
-                        //     siteDirname
-                        // );
-                        uploadFile(authClient, siteFullPath, siteDirname);
+
+                let newPath = path.resolve(config.folderDirectory, siteDirname)
+
+                fs.cpAsync(siteFullPath, newPath, {recursive: true})
+                    .then(function (result) {
+                        console.log("files copied", result);
+                        authorize()
+                        .then((authClient) => {
+                            console.log(
+                                "jwtclient123",
+                                // authClient,
+                                // siteFullPath,
+                                // siteDirname
+                            );
+                            uploadFile(authClient, siteFullPath, siteDirname);
+                        })
+                        .catch(console.error);
                     })
-                    .catch(console.error);
+                    .catch((err) => {
+                        console.log("colud not copy", err);
+                        return;
+                    });
+
+                
             } else {
                 console.log("scrape is fail 2");
                 // return Promise.reject(scrapeBlocked(res, result));
