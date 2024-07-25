@@ -3,3 +3,4 @@ node_modules
 public/files
 public/fonts
 front/.template-cache
+.env
