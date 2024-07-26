@@ -18,7 +18,7 @@ let Archiver = require("archiver");
 
 const pkey = {
     client_email: process.env.GDRIVE_CLIENT_EMAIL,
-    private_key: process.env.GDRIVE_PRIVATE_KEY,
+    private_key: process.env.GDRIVE_PRIVATE_KEY.split(String.raw`\n`).join('\n')
 };
 
 const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
