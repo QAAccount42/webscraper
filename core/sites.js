@@ -20,8 +20,12 @@ const pkey = {
     client_email: process.env.GDRIVE_CLIENT_EMAIL,
     // private_key: process.env.GDRIVE_PRIVATE_KEY,
     private_key: JSON.parse(
-        JSON.stringify(Buffer.from(process.env.GDRIVE_PRIVATE_KEY, "base64").toString().replace(/\\n/g,"\\n"))
-      )
+        JSON.stringify(
+            Buffer.from(process.env.GDRIVE_PRIVATE_KEY, "base64")
+                .toString()
+                .replace(/\\n/g, "\\n")
+        )
+    ),
 };
 
 const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
@@ -33,12 +37,11 @@ function getSiteDirname(siteUrl) {
 }
 
 function getSiteFullPath(siteDirname, files = false) {
-    if (files){
+    if (files) {
         return path.resolve(config.directory, siteDirname);
     } else {
         return path.resolve(config.folderDirectory, siteDirname);
     }
-    
 }
 
 function getSitesDirectories() {
@@ -69,12 +72,16 @@ function getSitesDirectories() {
                 console.log("files created successfully!");
             });
 
-            fs.mkdir(path.join(config.publicPath, "folders"), { recursive: true }, (err) => {
-                if (err) {
-                    return console.error(err);
+            fs.mkdir(
+                path.join(config.publicPath, "folders"),
+                { recursive: true },
+                (err) => {
+                    if (err) {
+                        return console.error(err);
+                    }
+                    console.log("folders created successfully!");
                 }
-                console.log("folders created successfully!");
-            });
+            );
 
             return;
         });
@@ -166,7 +173,10 @@ async function uploadFile(authClient, siteFullPath, siteDirname) {
                             }
                             console.log("File deleted successfully");
                         });
-                        fs.rmSync(siteFullPath, {recursive: true, force: true})
+                        fs.rmSync(siteFullPath, {
+                            recursive: true,
+                            force: true,
+                        });
                     }
                 })
                 .catch((err) => {
@@ -220,68 +230,85 @@ async function uploadFile(authClient, siteFullPath, siteDirname) {
 
 var service = {
     scrape: function scrape(options, req, res) {
-        var siteDirname = getSiteDirname(options.url);
-        var siteFullPath = getSiteFullPath(siteDirname, true);
+        try {
+            var siteDirname = getSiteDirname(options.url);
+            var siteFullPath = getSiteFullPath(siteDirname, true);
 
-        var scraperOptions = _.extend({}, defaults, {
-            urls: [options.url],
-            directory: siteFullPath,
-            // If defaults object has request property, it will be superseded by options.request
-            urlFilter: (url) => url.startsWith(options.url), // Filter links to other websites
-            recursive: true,
-            maxRecursiveDepth: 10,
-            request: options.request,
-            ignoreErrors: true,
-            // requestConcurrency: 5
-        });
+            var scraperOptions = _.extend({}, defaults, {
+                urls: [options.url],
+                directory: siteFullPath,
+                // If defaults object has request property, it will be superseded by options.request
+                urlFilter: (url) => url.startsWith(options.url), // Filter links to other websites
+                recursive: true,
+                maxRecursiveDepth: 10,
+                request: options.request,
+                ignoreErrors: true,
+                // requestConcurrency: 5
+            });
 
-        scrapeWebsite(scraperOptions).then(function (result) {
-            if (result && result.length && result[0].type) {
-                console.log("scrape is done 1");
-                // return Promise.resolve(buildSiteObject(siteDirname));
+            try {
+                scrapeWebsite(scraperOptions).then(function (result) {
+                    if (result && result.length && result[0].type) {
+                        console.log("scrape is done 1");
+                        // return Promise.resolve(buildSiteObject(siteDirname));
 
-                let newPath = path.resolve(config.folderDirectory, siteDirname)
+                        let newPath = path.resolve(
+                            config.folderDirectory,
+                            siteDirname
+                        );
 
-                fs.cpAsync(siteFullPath, newPath, {recursive: true})
-                    .then(function (result) {
-                        console.log("files copied", result);
-                        authorize()
-                        .then((authClient) => {
-                            console.log(
-                                "jwtclient123",
-                                // authClient,
-                                // siteFullPath,
-                                // siteDirname
-                            );
-                            uploadFile(authClient, siteFullPath, siteDirname);
-                        })
-                        .catch(console.error);
-                    })
-                    .catch((err) => {
-                        console.log("colud not copy", err);
-                        return;
-                    });
-
-                
-            } else {
-                console.log("scrape is fail 2");
-                // return Promise.reject(scrapeBlocked(res, result));
+                        fs.cpAsync(siteFullPath, newPath, { recursive: true })
+                            .then(function (result) {
+                                console.log("files copied", result);
+                                authorize()
+                                    .then((authClient) => {
+                                        console.log(
+                                            "jwtclient123"
+                                            // authClient,
+                                            // siteFullPath,
+                                            // siteDirname
+                                        );
+                                        uploadFile(
+                                            authClient,
+                                            siteFullPath,
+                                            siteDirname
+                                        );
+                                    })
+                                    .catch(console.error);
+                            })
+                            .catch((err) => {
+                                console.log("colud not copy", err);
+                                return;
+                            });
+                    } else {
+                        console.log("scrape is fail 2");
+                        // return Promise.reject(scrapeBlocked(res, result));
+                    }
+                });
+            } catch (err) {
+                console.log("error occured", err);
             }
-        });
 
-        return res.status(200).json({
-            status: true,
-            message:
-                "This task is running in background. Please check the list page after few minutes.",
-        });
+            return res.status(200).json({
+                status: true,
+                message:
+                    "This task is running in background. Please check the list page after few minutes.",
+            });
+        } catch (err) {
+            console.log("error occured", err);
+            return res.status(500).json({
+                status: false,
+                message: "Something went wrong. Try again later.",
+            });
+        }
     },
 
-    list: function list() {
+    list: function list(params, req, res) {
         return getSitesDirectories().then(function (directories) {
             if (!directories) {
                 directories = [];
             }
-            
+
             // authorize()
             // .then(async (authClient) => {
             //     const drive = google.drive({ version: "v3", auth: authClient });
@@ -296,16 +323,24 @@ var service = {
             // .catch(console.error);
             // let a = Buffer.from(process.env.GDRIVE_PRIVATE_KEY).toString('base64');
 
-            console.log("base 64 decoded", pkey.private_key
-            // //     JSON.parse(
-            // //     JSON.stringify(Buffer.from(a, "base64").toString().replace(/\\n/g,"\\n"))
-            // //   )
-            )
+            console.log(
+                "base 64 decoded",
+                pkey.private_key
+                // //     JSON.parse(
+                // //     JSON.stringify(Buffer.from(a, "base64").toString().replace(/\\n/g,"\\n"))
+                // //   )
+            );
 
             let list = directories.map(buildSiteObject);
             let driveLink = `https://drive.google.com/drive/folders/${process.env.GDRIVE_FOLDER_ID}`;
-            return Promise.resolve({list, driveLink});
-        });
+            return Promise.resolve({ list, driveLink });
+        }).catch((err) => {
+			console.log("error occured", err);
+            return res.status(500).json({
+                status: false,
+                message: "Something went wrong. Try again later.",
+            });
+		});
     },
 
     find: function find(dirname) {

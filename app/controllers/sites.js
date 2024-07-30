@@ -5,9 +5,17 @@ module.exports = {
 	scrape: function(options, req, res){
 		return sites.scrape(options, req, res);
 	},
-	list: sites.list,
-	find: function(params) {
-		return sites.find(params.dirname);
+	list: function(params, req, res){
+		return sites.list(params, req, res)
+	},
+	find: function(params, req, res) {
+		return sites.find(params.dirname).catch((err) => {
+			console.log("error occured", err);
+            return res.status(500).json({
+                status: false,
+                message: "Something went wrong. Try again later.",
+            });
+		});
 	},
 
 	download: function scrape(params, req, res) {
@@ -20,6 +28,13 @@ module.exports = {
 			var zip = Archiver('zip');
 			zip.pipe(res);
 			zip.directory(fullPath, false).finalize();
+		})
+		.catch((err) => {
+			console.log("error occured", err);
+            return res.status(500).json({
+                status: false,
+                message: "Something went wrong. Try again later.",
+            });
 		});
 	}
 };
