@@ -166,17 +166,18 @@ async function uploadFile(authClient, siteFullPath, siteDirname) {
             fs.statAsync(root + "/" + `${siteDirname}.zip`)
                 .then(function (stat) {
                     if (stat.isFile()) {
-                        fs.unlink(root + "/" + `${siteDirname}.zip`, (err) => {
-                            if (err) {
-                                console.error("Could not delete file", err);
-                                return;
-                            }
-                            console.log("File deleted successfully");
-                        });
+                        // fs.unlink(root + "/" + `${siteDirname}.zip`, (err) => {
+                        //     if (err) {
+                        //         console.error("Could not delete file", err);
+                        //         return;
+                        //     }
+                        //     console.log("File deleted successfully");
+                        // });
 
                         try {
                             fs.rmSync(siteFullPath, {
-                                recursive: true
+                                recursive: true,
+                                force: true,
                             });
                         } catch (error) {
                             console.log("Error deleting folder at " + siteFullPath, error);
