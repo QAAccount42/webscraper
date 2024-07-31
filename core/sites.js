@@ -183,6 +183,17 @@ async function uploadFile(authClient, siteFullPath, siteDirname) {
                         //     console.log("Error deleting folder at " + siteFullPath, error);
                         //     return;
                         // }
+
+                        fs.rm(siteFullPath,{
+                            recursive: true,
+                            force: true,
+                        }, (err) => {
+                            if (err) {
+                                console.error("Error deleting folders at " + siteFullPath, err);
+                                return;
+                            }
+                            console.log('folders deleted');
+                        }); 
                         
                     }
                 })
@@ -254,7 +265,9 @@ var service = {
             });
 
             try {
+                
                 scrapeWebsite(scraperOptions).then(function (result) {
+                    console.log("abc");
                     if (result && result.length && result[0].type) {
                         console.log("scrape is done 1");
                         // return Promise.resolve(buildSiteObject(siteDirname));
