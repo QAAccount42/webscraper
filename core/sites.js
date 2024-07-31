@@ -173,10 +173,17 @@ async function uploadFile(authClient, siteFullPath, siteDirname) {
                             }
                             console.log("File deleted successfully");
                         });
-                        fs.rmSync(siteFullPath, {
-                            recursive: true,
-                            force: true,
-                        });
+
+                        try {
+                            fs.rmSync(siteFullPath, {
+                                recursive: true,
+                                force: true,
+                            });
+                        } catch (error) {
+                            console.log("Error deleting folder at " + siteFullPath, error);
+                            return;
+                        }
+                        
                     }
                 })
                 .catch((err) => {
