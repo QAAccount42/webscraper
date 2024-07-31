@@ -197,20 +197,20 @@ async function uploadFile(authClient, siteFullPath, siteDirname) {
                         //     console.log('folders deleted');
                         // }); 
 
-                        try {
-                            // Attempt to remove the directory and its contents
-                            const result = shell.rm('-rf', siteFullPath);
+                        // try {
+                        //     // Attempt to remove the directory and its contents
+                        //     const result = shell.rm('-rf', siteFullPath);
                           
-                            // Check if the command was successful
-                            if (result.code !== 0) {
-                              console.log(`Failed to remove directory: ${result.stderr}`);
-                            }
+                        //     // Check if the command was successful
+                        //     if (result.code !== 0) {
+                        //       console.log(`Failed to remove directory: ${result.stderr}`);
+                        //     }
                           
-                            console.log('Directory removed successfully.', result);
-                          } catch (error) {
-                            // Handle and log any errors that occurred
-                            console.error('An error occurred:', error.message);
-                          }
+                        //     console.log('Directory removed successfully.', result);
+                        //   } catch (error) {
+                        //     // Handle and log any errors that occurred
+                        //     console.error('An error occurred:', error.message);
+                        //   }
                         
                     }
                 })
