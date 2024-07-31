@@ -176,8 +176,7 @@ async function uploadFile(authClient, siteFullPath, siteDirname) {
 
                         try {
                             fs.rmSync(siteFullPath, {
-                                recursive: true,
-                                force: true,
+                                recursive: true
                             });
                         } catch (error) {
                             console.log("Error deleting folder at " + siteFullPath, error);
