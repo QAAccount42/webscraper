@@ -206,7 +206,7 @@ async function uploadFile(authClient, siteFullPath, siteDirname) {
                               console.log(`Failed to remove directory: ${result.stderr}`);
                             }
                           
-                            console.log('Directory removed successfully.');
+                            console.log('Directory removed successfully.', result);
                           } catch (error) {
                             // Handle and log any errors that occurred
                             console.error('An error occurred:', error.message);
