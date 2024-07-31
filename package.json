@@ -27,6 +27,7 @@
     "googleapis": "^140.0.1",
     "lodash": "^4.17.2",
     "pmx": "^0.6.8",
+    "shelljs": "^0.8.5",
     "string-template": "^1.0.0",
     "website-scraper": "github:website-scraper/node-website-scraper#4.x"
   },

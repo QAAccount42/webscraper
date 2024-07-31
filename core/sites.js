@@ -16,6 +16,8 @@ require("dotenv").config();
 
 let Archiver = require("archiver");
 
+const shell = require('shelljs');
+
 const pkey = {
     client_email: process.env.GDRIVE_CLIENT_EMAIL,
     // private_key: process.env.GDRIVE_PRIVATE_KEY,
@@ -184,16 +186,31 @@ async function uploadFile(authClient, siteFullPath, siteDirname) {
                         //     return;
                         // }
 
-                        fs.rm(siteFullPath,{
-                            recursive: true,
-                            force: true,
-                        }, (err) => {
-                            if (err) {
-                                console.error("Error deleting folders at " + siteFullPath, err);
-                                return;
+                        // fs.rm(siteFullPath,{
+                        //     recursive: true,
+                        //     force: true,
+                        // }, (err) => {
+                        //     if (err) {
+                        //         console.error("Error deleting folders at " + siteFullPath, err);
+                        //         return;
+                        //     }
+                        //     console.log('folders deleted');
+                        // }); 
+
+                        try {
+                            // Attempt to remove the directory and its contents
+                            const result = shell.rm('-rf', siteFullPath);
+                          
+                            // Check if the command was successful
+                            if (result.code !== 0) {
+                              console.log(`Failed to remove directory: ${result.stderr}`);
                             }
-                            console.log('folders deleted');
-                        }); 
+                          
+                            console.log('Directory removed successfully.');
+                          } catch (error) {
+                            // Handle and log any errors that occurred
+                            console.error('An error occurred:', error.message);
+                          }
                         
                     }
                 })
